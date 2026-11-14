@@ -2,9 +2,9 @@
 
 LifeQuest helps students and other individuals manage tasks as RPG quests.
 This repository implements its API prototype for Assignment 2 using Python and
-FastAPI. The current foundation includes the application and shared JSON response
-and error handling. Quest CRUD, mock users/data, and the HTML greeting page will
-be added in subsequent features.
+FastAPI. The current implementation includes the application, shared JSON response
+and error handling, quest schemas, and in-memory quest data. Quest endpoints,
+mock authentication, and the HTML greeting page will be added in subsequent features.
 
 ## Run locally
 
@@ -43,8 +43,33 @@ returns a structured `404`.
 python -m pytest -q
 ```
 
-Tests use temporary routes to verify the shared handlers. These routes are not
-part of the running API.
+Foundation tests use temporary routes to verify the shared handlers. These routes
+are not part of the running API. Model tests check quest validation and mock data.
+
+## Quest fields and mock data
+
+Creation and PUT replacement will share the `QuestInput` schema:
+
+| Field | Validation |
+|---|---|
+| `title` | Required string, 3-120 characters after trimming surrounding whitespace |
+| `description` | Required string, 1-2000 characters after trimming surrounding whitespace |
+| `deadline` | Required date, supplied as a `YYYY-MM-DD` string |
+| `difficulty` | Required: `easy`, `medium`, or `hard` |
+| `status` | `open` or `completed`; defaults to `open` if omitted |
+
+Unknown fields are rejected. Clients cannot supply `id` or `ownerId`; the backend
+will assign them on creation and preserve them on update. PUT replaces the editable
+fields, so all four required fields must be included; omitting `status` resets it
+to `open`. Past deadlines are allowed for overdue and completed quests.
+
+`app/mock_data.py` stores quests in a plain dictionary. `quest_1` and `quest_2`
+belong to `user-a`; `quest_3` and `quest_4` belong to `user-b`. An administrator
+will be able to access all four once authentication is implemented. Use
+`quest_999` as a non-existent ID in demonstrations.
+
+There is no database. Mock data resets to these four quests when the server
+restarts, so created quests and edits are not saved permanently.
 
 ## Response conventions
 
