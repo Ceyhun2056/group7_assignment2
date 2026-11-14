@@ -1,0 +1,1 @@
+"""LifeQuest API application package."""
