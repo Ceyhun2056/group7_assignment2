@@ -3,8 +3,9 @@
 LifeQuest helps students and other individuals manage tasks as RPG quests.
 This repository implements its API prototype for Assignment 2 using Python and
 FastAPI. The current implementation includes the application, shared JSON response
-and error handling, quest schemas, and in-memory quest data. Quest endpoints,
-mock authentication, and the HTML greeting page will be added in subsequent features.
+and error handling, quest schemas, in-memory quest data, and mock authentication
+and access helpers. Quest endpoints and the HTML greeting page will be added in
+subsequent features.
 
 ## Run locally
 
@@ -65,11 +66,42 @@ to `open`. Past deadlines are allowed for overdue and completed quests.
 
 `app/mock_data.py` stores quests in a plain dictionary. `quest_1` and `quest_2`
 belong to `user-a`; `quest_3` and `quest_4` belong to `user-b`. An administrator
-will be able to access all four once authentication is implemented. Use
+can access all four through the shared access helper. Use
 `quest_999` as a non-existent ID in demonstrations.
 
 There is no database. Mock data resets to these four quests when the server
 restarts, so created quests and edits are not saved permanently.
+
+## Mock authentication and access control
+
+No login, passwords, JWTs, or external authentication service are needed. The
+assignment uses these predefined tokens:
+
+| Token | User ID | Permissions |
+|---|---|---|
+| `user-a-token` | `user-a` | Own quests only |
+| `user-b-token` | `user-b` | Own quests only |
+| `admin-token` | `admin` | All quests |
+
+Protected endpoints will use `Depends(get_current_user)` from `app/auth.py`.
+Send the token in the header, for example:
+
+```http
+Authorization: Bearer user-a-token
+```
+
+Missing, malformed, and invalid tokens return `401 UNAUTHORIZED` with a
+`WWW-Authenticate: Bearer` header. Tokens are case-sensitive.
+
+`get_accessible_quest` returns `404 NOT_FOUND` for a missing quest and
+`403 FORBIDDEN` for another user's quest. We choose `403` to clearly explain an
+authenticated user's lack of permission, as permitted by the assignment. Quest
+reading, updating, and deletion will reuse this check. Collection endpoints will
+use `can_access_quest` to filter results before calculating pagination metadata.
+
+These helpers are tested using an isolated test endpoint. They will be connected
+to the actual quest endpoints in subsequent commits; no new public route is added
+by this authentication feature.
 
 ## Response conventions
 
