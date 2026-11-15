@@ -4,8 +4,8 @@ LifeQuest helps students and other individuals manage tasks as RPG quests.
 This repository implements its API prototype for Assignment 2 using Python and
 FastAPI. The current implementation includes the application, shared JSON response
 and error handling, quest schemas, in-memory quest data, and mock authentication
-and access helpers. Quest endpoints and the HTML greeting page will be added in
-subsequent features.
+and access helpers, plus quest listing and retrieval. Quest creation, updating,
+deletion, and the HTML greeting page will be added in subsequent features.
 
 ## Run locally
 
@@ -35,8 +35,7 @@ python -m uvicorn app.main:app --reload
 ```
 
 Open http://127.0.0.1:8000/docs for interactive API documentation.
-No business endpoints are registered in this foundation yet; a request to `/`
-returns a structured `404`.
+The quest GET endpoints are registered; a request to `/` returns a structured `404`.
 
 ## Run tests
 
@@ -99,9 +98,37 @@ authenticated user's lack of permission, as permitted by the assignment. Quest
 reading, updating, and deletion will reuse this check. Collection endpoints will
 use `can_access_quest` to filter results before calculating pagination metadata.
 
-These helpers are tested using an isolated test endpoint. They will be connected
-to the actual quest endpoints in subsequent commits; no new public route is added
-by this authentication feature.
+The authentication helpers are connected to both GET quest endpoints. Isolated
+helper tests and actual endpoint tests verify their behavior.
+
+## Quest GET endpoints
+
+Both endpoints require `Authorization: Bearer <token>` and return the standard
+JSON envelope. No request body is needed.
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/v1/quests` | List the caller's quests; administrators see all quests |
+| GET | `/api/v1/quests/{quest_id}` | Retrieve one quest, subject to ownership checks |
+
+The list accepts integer queries `page` (minimum 1, default 1) and `perPage`
+(1-100, default 10). Results follow the mock dictionary's insertion order.
+Access filtering happens before pagination; `meta.total` counts only visible
+quests. A page beyond the results returns an empty array with HTTP 200.
+
+Example in Windows PowerShell (or replace `curl.exe` with `curl` on Linux/macOS):
+
+```powershell
+curl.exe -H "Authorization: Bearer user-b-token" "http://127.0.0.1:8000/api/v1/quests?page=2&perPage=1"
+curl.exe -H "Authorization: Bearer user-a-token" "http://127.0.0.1:8000/api/v1/quests/quest_1"
+```
+
+Both return 200 on success. The list response includes `data` as an array and
+`meta` with `total`, `page`, and `perPage`; the single response contains the quest
+object in `data`. Invalid pagination returns 400 `VALIDATION_ERROR`. Missing or
+invalid tokens return 401 `UNAUTHORIZED`. Single-quest requests can also return
+403 `FORBIDDEN` or 404 `NOT_FOUND`. Unexpected server errors use the shared 500
+`INTERNAL_SERVER_ERROR` response.
 
 ## Response conventions
 
