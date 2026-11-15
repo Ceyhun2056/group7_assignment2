@@ -8,12 +8,14 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
 from app.responses import error_response
+from app.quest_routes import router as quest_router
 
 app = FastAPI(
     title="LifeQuest API",
     description="A mocked quest-management API for the LifeQuest prototype.",
     version="1.0.0",
 )
+app.include_router(quest_router)
 
 # The assignment references an error-code table that is absent from the file.
 # These fixed codes cover its listed HTTP errors and unexpected server failures.
