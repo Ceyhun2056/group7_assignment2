@@ -1,4 +1,4 @@
-"""Replace the editable fields of an existing quest."""
+"""Update and delete existing quests after checking access."""
 
 from fastapi import APIRouter, Depends
 
@@ -31,3 +31,18 @@ def update_quest(
     )
     quests[quest_id] = updated
     return success_response("Quest updated successfully.", updated.model_dump(mode="json"))
+
+
+@router.delete(
+    "/{quest_id}",
+    responses={
+        401: {"description": "Missing or invalid Bearer token."},
+        403: {"description": "The quest belongs to another user."},
+        404: {"description": "The quest does not exist."},
+    },
+)
+def delete_quest(quest_id: str, user: User = Depends(get_current_user)) -> dict:
+    """Remove a quest only after its owner or an administrator is authorized."""
+    quest = get_accessible_quest(quest_id, user)
+    del quests[quest.id]
+    return success_response("Quest deleted successfully.")
