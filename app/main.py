@@ -9,12 +9,14 @@ from starlette.exceptions import HTTPException
 
 from app.responses import error_response
 from app.quest_routes import router as quest_router
+from app.greeting import router as greeting_router
 
 app = FastAPI(
     title="LifeQuest API",
     description="A mocked quest-management API for the LifeQuest prototype.",
     version="1.0.0",
 )
+app.include_router(greeting_router)
 app.include_router(quest_router)
 
 # The assignment references an error-code table that is absent from the file.

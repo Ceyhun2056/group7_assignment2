@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LifeQuest | API Prototype</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; color: #edf1fa; background: #101522; }
+    * { box-sizing: border-box; }
+    body { margin: 0; line-height: 1.65; }
+    main { width: min(100% - 40px, 1000px); margin: 0 auto; padding: 52px 0; }
+    a { color: #c5b8ff; text-underline-offset: 4px; }
+    a:focus-visible { outline: 3px solid #c5b8ff; outline-offset: 5px; }
+    .eyebrow { color: #c5b8ff; text-transform: uppercase; letter-spacing: .13em; font-size: .8rem; font-weight: 700; }
+    h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.1; margin: 16px 0; }
+    h2 { margin: 0 0 12px; font-size: 1.45rem; }
+    h3 { margin: 0 0 5px; font-size: 1.1rem; }
+    p { margin: 10px 0; }
+    .intro { max-width: 700px; font-size: 1.1rem; color: #c7d0e2; }
+    .status { display: inline-block; margin-top: 14px; padding: 7px 13px; border-radius: 20px; background: #153d33; color: #aaf0d2; font-weight: 600; font-size: .9rem; }
+    section { margin-top: 34px; padding: 26px; background: #192131; border: 1px solid #344057; border-radius: 16px; }
+    .team { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .muted { color: #b8c4d9; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; text-align: left; font-size: .9rem; }
+    th, td { padding: 14px 10px; border-bottom: 1px solid #344057; vertical-align: top; }
+    th { color: #b8c4d9; font-weight: 600; }
+    .method { font-size: .8rem; font-weight: 750; color: #d0c4ff; }
+    code { color: #dce5fa; overflow-wrap: anywhere; }
+    footer { margin-top: 24px; color: #b8c4d9; font-size: .9rem; }
+    @media (max-width: 600px) {
+      main { width: calc(100% - 28px); padding: 30px 0; }
+      section { padding: 18px; }
+      .team { grid-template-columns: 1fr; gap: 18px; }
+      th, td { padding: 12px 5px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Group 7 · Software Engineering</div>
+      <h1>LifeQuest</h1>
+      <p class="intro">Turn everyday goals into quests. LifeQuest helps students and other
+        individuals organize academic work and personal tasks through a gamified productivity experience.</p>
+      <p>This API prototype supports the quest-management part of the project.</p>
+      <span class="status">API running · v1</span>
+    </header>
+    <section aria-labelledby="team-title">
+      <h2 id="team-title">Meet the team</h2>
+      <div class="team">
+        <article>
+          <h3>Jeyhun Naghiyev</h3>
+          <p class="muted">Student ID: 21070</p>
+          <p>API foundation, quest models and mock data, authentication, ownership checks,
+            and quest listing and retrieval.</p>
+        </article>
+        <article>
+          <h3>Mahammad Mammadli</h3>
+          <!-- Replace the following placeholder with Mahammad's real ID before committing. -->
+          <p class="muted">Student ID: 23917</p>
+          <p>Quest update and deletion endpoints, related tests, and this responsive greeting page.</p>
+        </article>
+      </div>
+    </section>
+    <section aria-labelledby="endpoints-title">
+      <h2 id="endpoints-title">Available API endpoints</h2>
+      <p class="muted">Quest endpoints require a predefined Bearer token. This introduction is public.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Method</th><th scope="col">Path</th><th scope="col">Description</th></tr></thead>
+          <tbody><!-- ENDPOINT_ROWS --></tbody>
+        </table>
+      </div>
+      <p><a href="/docs">Open interactive API documentation</a></p>
+    </section>
+    <footer>Assignment 2 · Mock backend prototype. Quest data resets when the server restarts.</footer>
+  </main>
+</body>
+</html>
