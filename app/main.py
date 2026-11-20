@@ -10,6 +10,7 @@ from starlette.exceptions import HTTPException
 from app.responses import error_response
 from app.quest_routes import router as quest_router
 from app.greeting import router as greeting_router
+from app.quest_update import router as quest_update_router
 
 app = FastAPI(
     title="LifeQuest API",
@@ -18,6 +19,7 @@ app = FastAPI(
 )
 app.include_router(greeting_router)
 app.include_router(quest_router)
+app.include_router(quest_update_router)
 
 # The assignment references an error-code table that is absent from the file.
 # These fixed codes cover its listed HTTP errors and unexpected server failures.
