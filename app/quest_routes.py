@@ -9,7 +9,12 @@ from app.mock_data import quests
 from app.models import Quest, QuestInput
 from app.responses import success_response
 
-router = APIRouter(prefix="/api/v1/quests", tags=["Quests"])
+router = APIRouter(
+    prefix="/api/v1/quests",
+    tags=["Quests"],
+    # Suppress FastAPI's automatic 422 entry: validation errors use HTTP 400.
+    responses={"default": {"description": "Error with success=false and an error code and message."}},
+)
 
 
 @router.get(
