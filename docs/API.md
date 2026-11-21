@@ -311,16 +311,13 @@ Allow: GET
 }
 ```
 
-## POST /api/v1/quests · Planned
+## POST /api/v1/quests
 
-Quest creation is scheduled for a separate implementation commit. The intended
-contract accepts the JSON body described above with any valid mock token, uses no
-path or query parameters, and returns `201 Created` with the new quest in
-`data`. The server generates the ID and uses the authenticated user as owner.
-Invalid body fields are expected to return `400 VALIDATION_ERROR`. Missing or
-invalid tokens are expected to return `401 UNAUTHORIZED`.
-
-Example request for the planned route
+Any valid mock token can create a quest. Send the JSON body described above.
+There are no path or query parameters. The backend assigns the authenticated
+user as owner and generates an ID using `quest_` followed by a UUID in hexadecimal.
+Repeated submissions create separate quests. Missing or invalid tokens return
+`401 UNAUTHORIZED`. Invalid bodies return `400 VALIDATION_ERROR`.
 
 ```http
 POST /api/v1/quests HTTP/1.1
@@ -336,5 +333,24 @@ Content-Type: application/json
 }
 ```
 
-After the creation route merges, replace this planned section with the verified
-request and response, including the actual ID format and status codes.
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "success": true,
+  "message": "Quest created successfully.",
+  "data": {
+    "title": "Prepare API demo",
+    "description": "Practice showing quest creation and access checks.",
+    "deadline": "2026-11-25",
+    "difficulty": "medium",
+    "status": "open",
+    "id": "quest_ff2ddac0d5de4e229cb58c8a36ada8dc",
+    "ownerId": "user-a"
+  }
+}
+```
+
+The generated ID will differ on each request. Use the returned ID for subsequent
+GET, PUT, and DELETE calls.

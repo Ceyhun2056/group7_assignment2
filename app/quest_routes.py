@@ -1,12 +1,20 @@
-"""Quest listing and retrieval endpoints."""
+"""Quest listing, retrieval, and creation endpoints."""
+
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Query
 
 from app.auth import User, can_access_quest, get_accessible_quest, get_current_user
 from app.mock_data import quests
+from app.models import Quest, QuestInput
 from app.responses import success_response
 
-router = APIRouter(prefix="/api/v1/quests", tags=["Quests"])
+router = APIRouter(
+    prefix="/api/v1/quests",
+    tags=["Quests"],
+    # Suppress FastAPI's automatic 422 entry: validation errors use HTTP 400.
+    responses={"default": {"description": "Error with success=false and an error code and message."}},
+)
 
 
 @router.get(
@@ -42,3 +50,20 @@ def list_quests(
 def get_quest(quest_id: str, user: User = Depends(get_current_user)) -> dict:
     quest = get_accessible_quest(quest_id, user)
     return success_response("Quest retrieved successfully.", quest.model_dump(mode="json"))
+
+
+@router.post(
+    "",
+    status_code=201,
+    responses={
+        400: {"description": "Invalid or missing quest fields."},
+        401: {"description": "Missing or invalid Bearer token."},
+    },
+)
+def create_quest(body: QuestInput, user: User = Depends(get_current_user)) -> dict:
+    """Create a quest owned by the authenticated caller."""
+    quest = Quest(
+        **body.model_dump(), id=f"quest_{uuid4().hex}", ownerId=user.id
+    )
+    quests[quest.id] = quest
+    return success_response("Quest created successfully.", quest.model_dump(mode="json"))
