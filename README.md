@@ -48,10 +48,10 @@ See [CONTRIBUTORS.md](CONTRIBUTORS.md) for student IDs and responsibilities.
 
 ### Git contribution history
 
-Output of `git shortlog -sn --all` from the repository:
+Output of `git shortlog -sn --all` before this README refresh (`92eeb6f`):
 
 ```text
     18  Jeyhun Naghiyev
-     5  mmahammad57
+     7  mmahammad57
      1  Ceyhun2056
 ```
